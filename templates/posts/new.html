@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 {% set current_page = 'write' %}
-{% block title %}글쓰기 - Lumina{% endblock %}
+{% block title %}{% if mode == 'edit' %}글 수정 - Lumina{% else %}글쓰기 - Lumina{% endif %}{% endblock %}
 
 {% block content %}
 <div class="flex items-center justify-between mb-6">
   <div class="flex items-center gap-4">
-    <span class="text-xs uppercase tracking-widest bg-[#E6D5B8] text-[#685c45] px-4 py-2 rounded-full">DRAFT</span>
-    <span class="text-xs uppercase tracking-widest text-stone-500">WRITE MODE</span>
+    <span class="text-xs uppercase tracking-widest bg-[#E6D5B8] text-[#685c45] px-4 py-2 rounded-full">{% if mode == 'edit' %}EDIT{% else %}DRAFT{% endif %}</span>
+    <span class="text-xs uppercase tracking-widest text-stone-500">{% if mode == 'edit' %}EDIT MODE{% else %}WRITE MODE{% endif %}</span>
   </div>
   <a href="{{ url_for('posts_list') }}" class="text-stone-700">Cancel</a>
 </div>
 
-<form method="post" action="{{ url_for('posts_create') }}" class="flex flex-col gap-6">
+<form method="post" action="{{ form_action or url_for('posts_create') }}" class="flex flex-col gap-6">
   <div class="w-full aspect-[21/9] bg-[#E6D5B8] rounded-xl border border-stone-300 flex items-center justify-center text-[#685c45]">
     <div class="text-center">
       <span class="material-symbols-outlined text-4xl">add_a_photo</span>
@@ -52,7 +52,7 @@
   </div>
 
   <div class="flex justify-end">
-    <button type="submit" class="bg-[#695d46] text-white px-8 py-3 rounded-lg hover:opacity-90">Publish</button>
+    <button type="submit" class="bg-[#695d46] text-white px-8 py-3 rounded-lg hover:opacity-90">{{ submit_label or 'Publish' }}</button>
   </div>
 </form>
 {% endblock %}

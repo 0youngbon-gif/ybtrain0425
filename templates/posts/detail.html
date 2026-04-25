@@ -27,9 +27,21 @@
 </article>
 
 <section class="mt-10 pt-6 border-t border-stone-200">
-  <a href="{{ url_for('posts_list') }}" class="inline-flex items-center gap-2 bg-[#E6D5B8] text-stone-900 px-4 py-3 rounded-lg">
-    <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-    목록으로
-  </a>
+  <div class="flex flex-wrap gap-3">
+    <a href="{{ url_for('posts_list') }}" class="inline-flex items-center gap-2 bg-[#E6D5B8] text-stone-900 px-4 py-3 rounded-lg">
+      <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+      목록으로
+    </a>
+    <a href="{{ url_for('posts_edit', post_id=post['id']) }}" class="inline-flex items-center gap-2 bg-[#695d46] text-white px-4 py-3 rounded-lg">
+      <span class="material-symbols-outlined text-[18px]">edit_square</span>
+      수정
+    </a>
+    <form method="post" action="{{ url_for('posts_delete', post_id=post['id']) }}" onsubmit="return confirm('정말 삭제할까요?');" class="inline">
+      <button type="submit" class="inline-flex items-center gap-2 border border-red-300 text-red-700 px-4 py-3 rounded-lg">
+        <span class="material-symbols-outlined text-[18px]">delete</span>
+        삭제
+      </button>
+    </form>
+  </div>
 </section>
 {% endblock %}

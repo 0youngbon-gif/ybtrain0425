@@ -59,18 +59,36 @@ def posts_new() -> str:
     return render_template("posts/new.html")
 
 
+def _validate_post_form(title: str, content: str, action: str, post_id: int | None = None) -> str:
+    if action == "create":
+        return render_template(
+            "posts/new.html",
+            mode="create",
+            form_action=url_for("posts_create"),
+            submit_label="Publish",
+            error="제목과 내용을 모두 입력해주세요.",
+            title=title,
+            content=content,
+        )
+
+    return render_template(
+        "posts/new.html",
+        mode="edit",
+        form_action=url_for("posts_update", post_id=post_id),
+        submit_label="Update",
+        error="제목과 내용을 모두 입력해주세요.",
+        title=title,
+        content=content,
+    )
+
+
 @app.route("/posts", methods=["POST"])
 def posts_create() -> str:
     title = request.form.get("title", "").strip()
     content = request.form.get("content", "").strip()
 
     if not title or not content:
-        return render_template(
-            "posts/new.html",
-            error="제목과 내용을 모두 입력해주세요.",
-            title=title,
-            content=content,
-        )
+        return _validate_post_form(title, content, "create")
 
     db = get_db()
     cursor = db.execute(
@@ -79,6 +97,60 @@ def posts_create() -> str:
     )
     db.commit()
     return redirect(url_for("posts_detail", post_id=cursor.lastrowid))
+
+
+@app.route("/posts/<int:post_id>/edit")
+def posts_edit(post_id: int) -> str:
+    db = get_db()
+    post = db.execute(
+        "SELECT id, title, content, created_at FROM posts WHERE id = ?",
+        (post_id,),
+    ).fetchone()
+
+    if post is None:
+        abort(404)
+
+    return render_template(
+        "posts/new.html",
+        mode="edit",
+        form_action=url_for("posts_update", post_id=post_id),
+        submit_label="Update",
+        title=post["title"],
+        content=post["content"],
+    )
+
+
+@app.route("/posts/<int:post_id>", methods=["POST"])
+def posts_update(post_id: int) -> str:
+    db = get_db()
+    post = db.execute(
+        "SELECT id FROM posts WHERE id = ?",
+        (post_id,),
+    ).fetchone()
+
+    if post is None:
+        abort(404)
+
+    title = request.form.get("title", "").strip()
+    content = request.form.get("content", "").strip()
+
+    if not title or not content:
+        return _validate_post_form(title, content, "edit", post_id)
+
+    db.execute(
+        "UPDATE posts SET title = ?, content = ? WHERE id = ?",
+        (title, content, post_id),
+    )
+    db.commit()
+    return redirect(url_for("posts_detail", post_id=post_id))
+
+
+@app.route("/posts/<int:post_id>/delete", methods=["POST"])
+def posts_delete(post_id: int) -> str:
+    db = get_db()
+    db.execute("DELETE FROM posts WHERE id = ?", (post_id,))
+    db.commit()
+    return redirect(url_for("posts_list"))
 
 
 @app.route("/posts/<int:post_id>")
