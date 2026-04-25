@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 import sqlite3
 
@@ -7,12 +8,12 @@ app = Flask(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent
 INSTANCE_DIR = BASE_DIR / "instance"
-DB_PATH = INSTANCE_DIR / "posts.db"
+DB_PATH = Path(os.getenv("DATABASE_PATH", str(INSTANCE_DIR / "posts.db")))
 
 
 def get_db() -> sqlite3.Connection:
     if "db" not in g:
-        INSTANCE_DIR.mkdir(exist_ok=True)
+        DB_PATH.parent.mkdir(parents=True, exist_ok=True)
         g.db = sqlite3.connect(DB_PATH)
         g.db.row_factory = sqlite3.Row
     return g.db
