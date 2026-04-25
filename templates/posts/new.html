@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% set current_page = 'write' %}
+{% block title %}글쓰기 - Lumina{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <div class="flex items-center gap-4">
+    <span class="text-xs uppercase tracking-widest bg-[#E6D5B8] text-[#685c45] px-4 py-2 rounded-full">DRAFT</span>
+    <span class="text-xs uppercase tracking-widest text-stone-500">WRITE MODE</span>
+  </div>
+  <a href="{{ url_for('posts_list') }}" class="text-stone-700">Cancel</a>
+</div>
+
+<form method="post" action="{{ url_for('posts_create') }}" class="flex flex-col gap-6">
+  <div class="w-full aspect-[21/9] bg-[#E6D5B8] rounded-xl border border-stone-300 flex items-center justify-center text-[#685c45]">
+    <div class="text-center">
+      <span class="material-symbols-outlined text-4xl">add_a_photo</span>
+      <p class="mt-2">Add cover image</p>
+    </div>
+  </div>
+
+  {% if error %}
+    <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3">{{ error }}</div>
+  {% endif %}
+
+  <div>
+    <input
+      type="text"
+      name="title"
+      placeholder="Enter post title..."
+      value="{{ title or '' }}"
+      class="w-full bg-transparent border-0 border-b border-stone-300 px-0 py-3 text-5xl font-bold tracking-tight placeholder:text-stone-300 focus:ring-0"
+      required
+    />
+  </div>
+
+  <div>
+    <textarea
+      name="content"
+      rows="12"
+      placeholder="Begin your story here..."
+      class="w-full bg-transparent border-0 px-0 py-2 text-xl leading-relaxed placeholder:text-stone-300 focus:ring-0 resize-y"
+      required
+    >{{ content or '' }}</textarea>
+  </div>
+
+  <div class="sticky bottom-24 self-center bg-white/80 backdrop-blur-md border border-stone-300 p-2 rounded-2xl flex items-center gap-1 shadow-sm">
+    <button type="button" class="p-3 rounded-xl text-stone-500 hover:bg-stone-100"><span class="material-symbols-outlined">format_bold</span></button>
+    <button type="button" class="p-3 rounded-xl text-stone-500 hover:bg-stone-100"><span class="material-symbols-outlined">format_italic</span></button>
+    <button type="button" class="p-3 rounded-xl text-stone-500 hover:bg-stone-100"><span class="material-symbols-outlined">link</span></button>
+    <button type="button" class="p-3 rounded-xl text-stone-500 hover:bg-stone-100"><span class="material-symbols-outlined">image</span></button>
+  </div>
+
+  <div class="flex justify-end">
+    <button type="submit" class="bg-[#695d46] text-white px-8 py-3 rounded-lg hover:opacity-90">Publish</button>
+  </div>
+</form>
+{% endblock %}

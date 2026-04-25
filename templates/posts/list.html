@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% set current_page = 'feed' %}
+{% block title %}게시글 목록 - Lumina{% endblock %}
+
+{% block content %}
+<header class="mb-6">
+  <span class="text-xs uppercase tracking-widest text-[#695d46]">Curated thoughts</span>
+  <h2 class="text-3xl font-bold tracking-tight mt-2">The Editorial Feed</h2>
+</header>
+
+<div class="flex flex-col gap-10">
+  {% if posts %}
+    {% for post in posts %}
+      <article class="group border-t border-stone-200 pt-6">
+        <a href="{{ url_for('posts_detail', post_id=post['id']) }}" class="block">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-xs uppercase tracking-widest text-[#695d46]">Post</span>
+            <span class="w-1 h-1 bg-stone-300 rounded-full"></span>
+            <time class="text-sm text-stone-500">{{ post['created_at'] }}</time>
+          </div>
+          <h3 class="text-2xl font-semibold tracking-tight mb-2 group-hover:text-[#695d46] transition-colors">{{ post['title'] }}</h3>
+          <p class="text-stone-600 leading-relaxed">
+            {{ (post['content'][:120] ~ '...') if post['content']|length > 120 else post['content'] }}
+          </p>
+        </a>
+      </article>
+    {% endfor %}
+  {% else %}
+    <section class="border border-dashed border-stone-300 rounded-xl p-6 bg-white/50">
+      <h3 class="text-xl font-semibold mb-2">아직 글이 없어요.</h3>
+      <p class="text-stone-600 mb-4">첫 글을 작성해 게시판을 시작해보세요.</p>
+      <a href="{{ url_for('posts_new') }}" class="inline-flex items-center gap-2 bg-[#695d46] text-white px-4 py-2 rounded-lg">
+        <span class="material-symbols-outlined text-[18px]">edit_square</span>
+        첫 글 쓰기
+      </a>
+    </section>
+  {% endif %}
+</div>
+
+<a href="{{ url_for('posts_new') }}" class="fixed right-6 bottom-24 bg-[#695d46] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg z-40">
+  <span class="material-symbols-outlined">edit_square</span>
+</a>
+{% endblock %}

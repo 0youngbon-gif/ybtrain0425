@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#f0eded",
+                    "primary-container": "#e6d5b8",
+                    "error": "#ba1a1a",
+                    "secondary": "#5f5e5b",
+                    "surface-tint": "#695d46",
+                    "secondary-fixed-dim": "#c8c6c2",
+                    "on-background": "#1b1c1c",
+                    "primary-fixed": "#f2e0c3",
+                    "inverse-primary": "#d5c5a8",
+                    "outline-variant": "#cec5b9",
+                    "on-primary": "#ffffff",
+                    "surface-variant": "#e4e2e1",
+                    "on-tertiary": "#ffffff",
+                    "surface-dim": "#dcd9d9",
+                    "on-primary-container": "#685c45",
+                    "inverse-on-surface": "#f3f0f0",
+                    "primary": "#695d46",
+                    "on-secondary": "#ffffff",
+                    "on-surface-variant": "#4c463d",
+                    "surface-container-high": "#eae7e7",
+                    "surface": "#fcf9f8",
+                    "on-tertiary-fixed": "#291803",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#303030",
+                    "surface-container-highest": "#e4e2e1",
+                    "on-tertiary-container": "#72583d",
+                    "surface-bright": "#fcf9f8",
+                    "error-container": "#ffdad6",
+                    "background": "#fcf9f8",
+                    "surface-container-low": "#f6f3f2",
+                    "tertiary-container": "#f4d1af",
+                    "tertiary": "#735a3e",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed-variant": "#504530",
+                    "secondary-fixed": "#e5e2de",
+                    "tertiary-fixed": "#ffddbb",
+                    "on-tertiary-fixed-variant": "#5a4229",
+                    "on-primary-fixed": "#231a08",
+                    "on-secondary-container": "#636260",
+                    "outline": "#7d766c",
+                    "on-secondary-fixed": "#1c1c1a",
+                    "primary-fixed-dim": "#d5c5a8",
+                    "tertiary-fixed-dim": "#e3c19f",
+                    "secondary-container": "#e2dfdb",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface": "#1b1c1c",
+                    "on-secondary-fixed-variant": "#474744"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-sm": "8px",
+                    "stack-lg": "24px",
+                    "base": "8px",
+                    "section-gap": "48px",
+                    "gutter": "16px",
+                    "container-margin": "24px",
+                    "stack-md": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "body-md": ["Plus Jakarta Sans"],
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "headline-xl": ["Plus Jakarta Sans"],
+                    "label-md": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "headline-lg": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "headline-xl": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #F9F6F2;
+        }
+        ::placeholder {
+            color: #cec5b9;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-24">
+<!-- Top AppBar (from JSON) -->
+<header class="bg-[#F9F6F2] dark:bg-stone-950 text-stone-900 dark:text-stone-100 font-['Plus_Jakarta_Sans'] text-base tracking-tight docked full-width top-0 border-b border-stone-200 dark:border-stone-800 flat no shadows sticky z-50">
+<div class="flex justify-between items-center w-full px-6 h-16">
+<button class="material-symbols-outlined hover:bg-stone-200/50 dark:hover:bg-stone-800/50 transition-colors p-2 rounded-full active:opacity-70">menu</button>
+<h1 class="text-xl font-bold tracking-tighter text-stone-900 dark:text-stone-100">Lumina</h1>
+<button class="material-symbols-outlined hover:bg-stone-200/50 dark:hover:bg-stone-800/50 transition-colors p-2 rounded-full active:opacity-70">search</button>
+</div>
+</header>
+<!-- Reading Progress Indicator -->
+<div class="fixed top-16 left-0 w-full h-[2px] bg-secondary-container z-50">
+<div class="h-full bg-primary" style="width: 15%;"></div>
+</div>
+<!-- Main Canvas -->
+<main class="max-w-screen-md mx-auto px-container-margin py-section-gap">
+<form class="flex flex-col gap-stack-lg">
+<!-- Editor Controls -->
+<div class="flex items-center justify-between mb-stack-md">
+<div class="flex gap-stack-md">
+<span class="font-label-sm text-label-sm text-primary py-2 px-4 bg-primary-container rounded-full">DRAFT</span>
+<span class="font-label-sm text-label-sm text-secondary py-2 px-4">SAVED AT 10:42 AM</span>
+</div>
+<div class="flex gap-gutter">
+<button class="font-label-md text-label-md text-on-surface hover:bg-surface-container transition-colors py-2 px-6 rounded-lg active:scale-95 transition-transform" type="button">Cancel</button>
+<button class="font-label-md text-label-md bg-primary text-on-primary hover:opacity-90 transition-opacity py-2 px-8 rounded-lg active:scale-95 transition-transform" type="submit">Publish</button>
+</div>
+</div>
+<!-- Image Cover Selection (Asymmetric Layout Element) -->
+<div class="relative group w-full aspect-[21/9] bg-primary-container rounded-xl overflow-hidden mb-stack-lg border border-outline-variant flex items-center justify-center cursor-pointer hover:border-primary transition-colors">
+<div class="flex flex-col items-center gap-base">
+<span class="material-symbols-outlined text-primary text-4xl">add_a_photo</span>
+<span class="font-label-md text-label-md text-primary">Add cover image</span>
+</div>
+</div>
+<!-- Post Title Input -->
+<div class="flex flex-col gap-stack-sm">
+<input aria-label="Post Title" class="font-headline-xl text-headline-xl w-full bg-transparent border-none focus:ring-0 px-0 placeholder:text-outline-variant" placeholder="Enter post title..." type="text"/>
+<div class="h-[1px] w-full bg-outline-variant"></div>
+</div>
+<!-- Post Body Textarea -->
+<div class="mt-stack-md">
+<textarea aria-label="Post Body" class="font-body-lg text-body-lg w-full bg-transparent border-none focus:ring-0 px-0 resize-none placeholder:text-outline-variant leading-relaxed" placeholder="Begin your story here..." rows="12"></textarea>
+</div>
+<!-- Formatting Bento Bar -->
+<div class="sticky bottom-24 self-center bg-surface-container-low/80 backdrop-blur-md border border-outline-variant p-2 rounded-2xl flex items-center gap-2 shadow-sm">
+<button class="p-3 hover:bg-surface-container transition-colors rounded-xl material-symbols-outlined text-secondary" type="button">format_bold</button>
+<button class="p-3 hover:bg-surface-container transition-colors rounded-xl material-symbols-outlined text-secondary" type="button">format_italic</button>
+<button class="p-3 hover:bg-surface-container transition-colors rounded-xl material-symbols-outlined text-secondary" type="button">format_h1</button>
+<div class="w-[1px] h-6 bg-outline-variant mx-1"></div>
+<button class="p-3 hover:bg-surface-container transition-colors rounded-xl material-symbols-outlined text-secondary" type="button">link</button>
+<button class="p-3 hover:bg-surface-container transition-colors rounded-xl material-symbols-outlined text-secondary" type="button">format_quote</button>
+<button class="p-3 hover:bg-surface-container transition-colors rounded-xl material-symbols-outlined text-secondary" type="button">image</button>
+<div class="w-[1px] h-6 bg-outline-variant mx-1"></div>
+<button class="p-3 hover:bg-surface-container transition-colors rounded-xl material-symbols-outlined text-secondary" type="button">settings</button>
+</div>
+</form>
+</main>
+<!-- Bottom Navigation Bar (from JSON) -->
+<nav class="fixed bottom-0 w-full border-t z-50 bg-[#F9F6F2] dark:bg-stone-950 text-stone-900 dark:text-stone-100 font-['Plus_Jakarta_Sans'] text-[11px] font-medium uppercase tracking-widest border-stone-200 dark:border-stone-800 flat no shadows">
+<div class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-3 bg-[#F9F6F2] dark:bg-stone-950">
+<!-- Feed -->
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-600 px-4 py-1 hover:text-stone-600 dark:hover:text-stone-300 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="article">article</span>
+<span class="mt-1">Feed</span>
+</a>
+<!-- Write (Active) -->
+<a class="flex flex-col items-center justify-center text-stone-900 dark:text-stone-100 bg-[#E6D5B8] dark:bg-stone-800 rounded-lg px-4 py-1 hover:text-stone-600 dark:hover:text-stone-300 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="edit_square">edit_square</span>
+<span class="mt-1">Write</span>
+</a>
+<!-- Profile -->
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-600 px-4 py-1 hover:text-stone-600 dark:hover:text-stone-300 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="mt-1">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>
