@@ -56,6 +56,13 @@
         <span class="material-symbols-outlined">edit_square</span>
         <span class="text-[11px] font-medium uppercase tracking-widest mt-1">Write</span>
       </a>
+      <a
+        class="flex flex-col items-center justify-center px-4 py-1 rounded-lg {% if current_page == 'news' %}text-stone-900 bg-[#E6D5B8]{% else %}text-stone-400 hover:text-stone-600{% endif %}"
+        href="{{ url_for('news') }}"
+      >
+        <span class="material-symbols-outlined">newspaper</span>
+        <span class="text-[11px] font-medium uppercase tracking-widest mt-1">News</span>
+      </a>
       <a class="flex flex-col items-center justify-center text-stone-400 px-4 py-1">
         <span class="material-symbols-outlined">person</span>
         <span class="text-[11px] font-medium uppercase tracking-widest mt-1">Profile</span>

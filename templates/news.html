@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% set current_page = 'news' %}
+{% block title %}뉴스 - Lumina{% endblock %}
+
+{% block content %}
+<header class="mb-6">
+  <span class="text-xs uppercase tracking-widest text-[#695d46]">Google News RSS</span>
+  <h2 class="text-3xl font-bold tracking-tight mt-2">오늘의 뉴스</h2>
+</header>
+
+<div class="flex flex-col gap-6">
+  {% if articles %}
+    {% for a in articles %}
+      <article class="border-t border-stone-200 pt-5 group">
+        <div class="flex items-center gap-3 mb-2">
+          <span class="text-xs uppercase tracking-widest text-[#695d46] font-medium">{{ loop.index }}</span>
+          <span class="w-1 h-1 bg-stone-300 rounded-full"></span>
+          <time class="text-sm text-stone-500">{{ a.pub_date }}</time>
+        </div>
+        <a href="{{ a.link }}" target="_blank" rel="noopener" class="block">
+          <h3 class="text-xl font-semibold tracking-tight mb-1 group-hover:text-[#695d46] transition-colors">
+            {{ a.title }}
+          </h3>
+        </a>
+        {% if a.summary %}
+          <p class="text-stone-600 leading-relaxed text-sm mt-1">{{ a.summary[:150] }}{% if a.summary|length > 150 %}...{% endif %}</p>
+        {% endif %}
+      </article>
+    {% endfor %}
+  {% else %}
+    <section class="border border-dashed border-stone-300 rounded-xl p-6 bg-white/50">
+      <h3 class="text-xl font-semibold mb-2">뉴스를 불러오지 못했습니다.</h3>
+      <p class="text-stone-600">잠시 후 다시 시도해주세요.</p>
+    </section>
+  {% endif %}
+</div>
+{% endblock %}

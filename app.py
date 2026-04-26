@@ -6,6 +6,8 @@ import sqlite3
 
 from flask import Flask, abort, g, redirect, render_template, request, url_for
 
+from crawler import fetch_news
+
 app = Flask(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -284,6 +286,12 @@ def posts_detail(post_id: int) -> str:
         abort(404)
 
     return render_template("posts/detail.html", post=post)
+
+
+@app.route("/news")
+def news() -> str:
+    articles = fetch_news(limit=10)
+    return render_template("news.html", articles=articles, current_page="news")
 
 
 with app.app_context():
