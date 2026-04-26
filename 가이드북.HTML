@@ -1,0 +1,931 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>가이드북 - Flask 게시판 프로젝트 (Lumina)</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Segoe UI","Noto Sans KR","Plus Jakarta Sans",sans-serif;background:#f7f8fa;color:#1f2937;line-height:1.75}
+    .wrap{max-width:1060px;margin:0 auto;padding:36px 20px 80px}
+
+    /* Typography */
+    h1{font-size:2.2rem;margin:0 0 6px}
+    h2{font-size:1.35rem;margin:0 0 10px}
+    h3{font-size:1.1rem;margin:16px 0 6px}
+    h4{font-size:1rem;margin:12px 0 4px;color:#374151}
+    .sub{color:#4b5563;margin:0 0 28px;font-size:1rem}
+
+    /* Cards */
+    .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:22px 24px;margin-bottom:16px;box-shadow:0 2px 8px rgba(17,24,39,.04)}
+    .card-inner{background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:16px 18px;margin:12px 0}
+
+    /* Tags */
+    .tag{display:inline-block;font-size:11px;font-weight:600;background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe;border-radius:999px;padding:3px 10px;margin-right:4px}
+    .tag-green{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}
+    .tag-orange{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
+    .tag-red{background:#fef2f2;color:#991b1b;border-color:#fecaca}
+    .tag-blue{background:#eff6ff;color:#1e40af;border-color:#bfdbfe}
+    .tag-gray{background:#f3f4f6;color:#374151;border-color:#d1d5db}
+    .date{font-size:13px;color:#6b7280;margin:0 0 4px}
+
+    /* Code */
+    code{background:#f3f4f6;padding:2px 7px;border-radius:6px;font-family:Consolas,Monaco,"Courier New",monospace;font-size:.88em;color:#be185d}
+    pre{background:#0f172a;color:#e2e8f0;border-radius:10px;padding:16px;overflow-x:auto;font-size:.88rem;line-height:1.6;margin:10px 0}
+    pre code{background:transparent;color:inherit;padding:0;font-size:inherit}
+
+    /* Lists */
+    .checklist{padding-left:20px;margin:8px 0}
+    .checklist li{margin-bottom:5px}
+
+    /* Steps */
+    .step{border-left:4px solid #2563eb;padding-left:14px;margin-bottom:6px}
+    .step-green{border-left-color:#059669}
+    .step-orange{border-left-color:#d97706}
+    .step-red{border-left-color:#dc2626}
+
+    /* Status */
+    .ok{color:#065f46;font-weight:600}
+    .warn{color:#92400e;font-weight:600}
+
+    /* Table */
+    table{border-collapse:collapse;width:100%;margin:10px 0;font-size:.92rem}
+    th,td{text-align:left;padding:8px 12px;border-bottom:1px solid #e5e7eb}
+    th{background:#f9fafb;font-weight:600;color:#374151;font-size:.85rem;text-transform:uppercase;letter-spacing:.5px}
+    td code{font-size:.84rem}
+
+    /* TOC */
+    .toc{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:22px 28px;margin-bottom:28px}
+    .toc h2{margin:0 0 12px;font-size:1.15rem}
+    .toc ol{padding-left:20px;margin:0}
+    .toc li{margin-bottom:4px}
+    .toc a{color:#2563eb;text-decoration:none}
+    .toc a:hover{text-decoration:underline}
+
+    /* Level badges */
+    .lv{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;margin-right:4px;vertical-align:middle}
+    .lv-b{background:#dcfce7;color:#166534}
+    .lv-m{background:#fef3c7;color:#92400e}
+    .lv-a{background:#fee2e2;color:#991b1b}
+
+    /* Separator */
+    hr.sep{border:0;border-top:2px solid #e5e7eb;margin:32px 0}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- ===================== TITLE ===================== -->
+    <h1>Flask 게시판 프로젝트 가이드북</h1>
+    <p class="sub">Lumina &mdash; Flask + SQLite + Tailwind CSS 게시판 &bull; 기획 &rarr; 개발 &rarr; 배포 &rarr; 실무 적용까지</p>
+    <p class="sub" style="margin-top:-18px"><span class="lv lv-b">입문</span><span class="lv lv-m">중급</span><span class="lv lv-a">실무</span> 난이도 표시 &mdash; 각자 수준에 맞는 섹션부터 읽으세요</p>
+
+    <!-- ===================== TOC ===================== -->
+    <div class="toc">
+      <h2>목차</h2>
+      <ol>
+        <li><a href="#overview">프로젝트 개요</a></li>
+        <li><a href="#architecture">구성 아키텍처</a></li>
+        <li><a href="#setup">개발 환경 설정</a></li>
+        <li><a href="#step1">Step 1 &mdash; Flask 앱 구조 &amp; SQLite 연동</a></li>
+        <li><a href="#step2">Step 2 &mdash; CRUD 전체 구현</a></li>
+        <li><a href="#step3">Step 3 &mdash; 템플릿 &amp; UI (Tailwind CSS)</a></li>
+        <li><a href="#step4">Step 4 &mdash; 페이지네이션 &amp; 검색 &amp; 정렬</a></li>
+        <li><a href="#step5">Step 5 &mdash; Render 클라우드 배포</a></li>
+        <li><a href="#theory">핵심 기술 이론 &mdash; 실무 적용 가이드</a></li>
+        <li><a href="#troubleshoot">트러블슈팅 &mdash; 자주 발생하는 이슈</a></li>
+        <li><a href="#commands">명령어 치트시트</a></li>
+      </ol>
+    </div>
+
+    <!-- ===================== 1. OVERVIEW ===================== -->
+    <h2 id="overview">1. 프로젝트 개요</h2>
+    <section class="card">
+      <span class="tag tag-blue">전체 개요</span>
+      <h3>무엇을 만드는가?</h3>
+      <p>웹 브라우저에서 동작하는 <strong>게시판(Board)</strong> 애플리케이션입니다. 글을 쓰고, 읽고, 수정하고, 삭제하는 <strong>CRUD</strong> 기능에 검색, 정렬, 페이지 분할 기능까지 갖추고 있습니다.</p>
+
+      <h3>최종 산출물</h3>
+      <table>
+        <tr><th>구분</th><th>내용</th></tr>
+        <tr><td>프레임워크</td><td><code>Flask 3.1</code> (Python 경량 웹 프레임워크)</td></tr>
+        <tr><td>데이터베이스</td><td><code>SQLite 3</code> (파일 기반 관계형 DB)</td></tr>
+        <tr><td>프론트엔드</td><td><code>HTML + Tailwind CSS</code> (CDN 방식)</td></tr>
+        <tr><td>템플릿 엔진</td><td><code>Jinja2</code> (Flask 내장)</td></tr>
+        <tr><td>배포</td><td><code>Render</code> (PaaS 클라우드) + <code>Gunicorn</code></td></tr>
+        <tr><td>버전관리</td><td><code>Git + GitHub</code></td></tr>
+      </table>
+
+      <h3>기능 목록</h3>
+      <table>
+        <tr><th>기능</th><th>설명</th><th>URL 패턴</th></tr>
+        <tr><td>글 목록</td><td>페이지당 10개, 검색/정렬</td><td><code>GET /posts</code></td></tr>
+        <tr><td>글 상세</td><td>단일 게시글 보기</td><td><code>GET /posts/1</code></td></tr>
+        <tr><td>글쓰기 폼</td><td>새 글 작성 화면</td><td><code>GET /posts/new</code></td></tr>
+        <tr><td>글 등록</td><td>DB에 새 글 저장</td><td><code>POST /posts</code></td></tr>
+        <tr><td>글 수정 폼</td><td>기존 글 편집 화면</td><td><code>GET /posts/1/edit</code></td></tr>
+        <tr><td>글 수정</td><td>DB 업데이트</td><td><code>POST /posts/1</code></td></tr>
+        <tr><td>글 삭제</td><td>DB에서 삭제</td><td><code>POST /posts/1/delete</code></td></tr>
+      </table>
+
+      <h3>프로젝트 일정</h3>
+      <table>
+        <tr><th>일자</th><th>작업</th></tr>
+        <tr><td>Day 1 (2026-04-25)</td><td>Flask 앱 구조, SQLite CRUD, 템플릿 UI, Render 배포</td></tr>
+        <tr><td>Day 2 (2026-04-26)</td><td>샘플 데이터 120개, 페이지네이션, 검색, 정렬</td></tr>
+      </table>
+    </section>
+
+    <!-- ===================== 2. ARCHITECTURE ===================== -->
+    <h2 id="architecture">2. 구성 아키텍처</h2>
+
+    <section class="card">
+      <span class="tag tag-blue">아키텍처</span>
+      <h3>디렉토리 구조</h3>
+      <pre><code>train_0425/
+├── app.py                  # Flask 애플리케이션 (라우팅 + DB 로직)
+├── seed.py                 # 샘플 데이터 120개 생성 스크립트
+├── requirements.txt        # Python 패키지 의존성
+├── Procfile                # Render 배포용 프로세스 설정
+├── runtime.txt             # Python 버전 고정
+├── instance/
+│   └── posts.db            # SQLite 데이터베이스 파일 (자동 생성)
+├── templates/
+│   ├── base.html           # 공통 레이아웃 (헤더/하단네비/스타일)
+│   └── posts/
+│       ├── list.html       # 글 목록 + 검색 + 정렬 + 페이지네이션
+│       ├── detail.html     # 글 상세 보기
+│       └── new.html        # 글쓰기 / 글수정 (공통 폼)
+└── .venv/                  # Python 가상환경 (Git 추적 제외)</code></pre>
+    </section>
+
+    <section class="card">
+      <span class="tag tag-blue">아키텍처</span>
+      <h3>MVC 패턴 적용</h3>
+      <p><span class="lv lv-m">중급</span> 이 프로젝트는 <strong>MVC(Model-View-Controller)</strong> 패턴의 경량 버전을 따릅니다.</p>
+      <table>
+        <tr><th>MVC 역할</th><th>이 프로젝트에서</th><th>파일</th></tr>
+        <tr><td><strong>Model</strong> (데이터)</td><td>SQLite 테이블 + Python DB 함수</td><td><code>app.py</code> 내 <code>get_db()</code>, <code>init_db()</code></td></tr>
+        <tr><td><strong>View</strong> (화면)</td><td>Jinja2 HTML 템플릿</td><td><code>templates/*.html</code></td></tr>
+        <tr><td><strong>Controller</strong> (로직)</td><td>Flask 라우트 함수</td><td><code>app.py</code> 내 <code>@app.route</code> 함수들</td></tr>
+      </table>
+
+      <div class="card-inner">
+        <h4>요청 흐름 (Request Flow)</h4>
+        <pre><code>브라우저 요청 → Flask Route(함수) → SQLite 쿼리 → Jinja2 템플릿 → HTML 응답 → 브라우저 렌더링
+
+예: GET /posts?page=2&q=Flask&sort=newest
+  → posts_list() 함수 실행
+  → WHERE title LIKE '%Flask%' ORDER BY created_at DESC LIMIT 10 OFFSET 10
+  → list.html 에 posts, page, total_pages 전달
+  → 브라우저에 HTML 출력</code></pre>
+      </div>
+    </section>
+
+    <section class="card">
+      <span class="tag tag-blue">아키텍처</span>
+      <h3>데이터베이스 스키마</h3>
+      <pre><code>CREATE TABLE posts (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,  -- 고유 번호 (자동 증가)
+    title      TEXT NOT NULL,                       -- 글 제목
+    content    TEXT NOT NULL,                       -- 글 본문
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP  -- 작성 시간
+);</code></pre>
+      <table>
+        <tr><th>컬럼</th><th>타입</th><th>설명</th><th>제약</th></tr>
+        <tr><td><code>id</code></td><td>INTEGER</td><td>Primary Key, 자동 증가</td><td>고유 식별자</td></tr>
+        <tr><td><code>title</code></td><td>TEXT</td><td>글 제목</td><td>NOT NULL</td></tr>
+        <tr><td><code>content</code></td><td>TEXT</td><td>글 본문</td><td>NOT NULL</td></tr>
+        <tr><td><code>created_at</code></td><td>TEXT</td><td>작성 일시</td><td>기본값: 현재시간</td></tr>
+      </table>
+    </section>
+
+    <!-- ===================== 3. SETUP ===================== -->
+    <h2 id="setup">3. 개발 환경 설정</h2>
+
+    <section class="card">
+      <span class="tag">환경설정</span> <span class="lv lv-b">입문</span>
+      <h3>필요 도구</h3>
+      <ul class="checklist">
+        <li><strong>Python 3.10+</strong> &mdash; <code>python --version</code> 으로 확인</li>
+        <li><strong>Git</strong> &mdash; <code>git --version</code> 으로 확인</li>
+        <li><strong>VS Code</strong> (권장 에디터)</li>
+        <li><strong>터미널</strong> &mdash; VS Code 내장 터미널 또는 PowerShell</li>
+      </ul>
+
+      <div class="card-inner">
+        <h4>가상환경이란? 왜 필요한가?</h4>
+        <p><span class="lv lv-b">입문</span> 가상환경(Virtual Environment)은 프로젝트마다 <strong>독립된 Python 패키지 공간</strong>을 만듭니다. 전역 Python에 영향을 주지 않아, 프로젝트 간 버전 충돌을 막습니다.</p>
+        <pre><code># 가상환경 생성 (최초 1회)
+python -m venv .venv
+
+# 활성화 (Windows PowerShell)
+.venv\Scripts\Activate.ps1
+
+# 활성화 확인 &mdash; 프롬프트 앞에 (.venv) 표시됨
+(.venv) PS D:\...&gt;
+
+# 패키지 설치
+pip install Flask gunicorn
+
+# 의존성 저장 (다른 PC에서도 동일 환경 구축 가능)
+pip freeze &gt; requirements.txt</code></pre>
+      </div>
+
+      <div class="card-inner">
+        <h4><span class="lv lv-m">중급</span> 의존성 관리의 중요성</h4>
+        <p><code>requirements.txt</code>는 "이 프로젝트가 어떤 패키지를, 어느 버전으로 사용하는가"를 기록합니다. 팀원이나 배포 서버에서 <code>pip install -r requirements.txt</code> 하나로 동일 환경을 재현할 수 있습니다.</p>
+        <pre><code># requirements.txt 내용
+Flask==3.1.3
+gunicorn==23.0.0</code></pre>
+        <ul class="checklist">
+          <li><code>Flask</code> &mdash; 웹 프레임워크 (개발 + 배포 모두 필요)</li>
+          <li><code>gunicorn</code> &mdash; 프로덕션 WSGI 서버 (배포 전용, 로컬 개발 시 불필요)</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== 4. STEP 1 ===================== -->
+    <hr class="sep">
+    <h2 id="step1">4. Step 1 &mdash; Flask 앱 구조 &amp; SQLite 연동</h2>
+
+    <section class="card">
+      <span class="tag">Step 1</span> <span class="lv lv-b">입문</span>
+      <h3>Flask 앱이란?</h3>
+      <p>Flask는 Python으로 웹 서버를 만들게 해주는 <strong>마이크로 프레임워크</strong>입니다. "마이크로"는 기능이 적다는 뜻이 아니라, <strong>필요한 것만 골라 쓰라는 철학</strong>입니다.</p>
+      <pre><code># app.py 핵심 구조
+from flask import Flask
+
+app = Flask(__name__)          # 1. 앱 인스턴스 생성
+
+@app.route("/")                # 2. URL 경로 연결 (라우팅)
+def index():
+    return redirect(url_for("posts_list"))
+
+if __name__ == "__main__":
+    app.run(debug=True)         # 3. 개발 서버 실행</code></pre>
+    </section>
+
+    <section class="card">
+      <span class="tag">Step 1</span> <span class="lv lv-b">입문</span>
+      <h3>SQLite 연결 관리</h3>
+      <p>이 프로젝트는 <strong>요청 단위 연결 패턴</strong>을 사용합니다. 매 요청마다 DB 연결을 만들고, 요청이 끝나면 닫습니다.</p>
+      <pre><code>def get_db():
+    """요청 내에서 DB 연결을 재사용합니다."""
+    if "db" not in g:                              # g: 요청 단위 저장소
+        DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+        g.db = sqlite3.connect(DB_PATH)            # 연결 생성
+        g.db.row_factory = sqlite3.Row             # 결과를 dict처럼 사용
+    return g.db
+
+@app.teardown_appcontext
+def close_db(_error):
+    """요청이 끝나면 연결을 자동으로 닫습니다."""
+    db = g.pop("db", None)
+    if db is not None:
+        db.close()</code></pre>
+      <div class="card-inner">
+        <h4><span class="lv lv-m">중급</span> 왜 <code>g</code> 객체를 사용하나요?</h4>
+        <p>Flask의 <code>g</code>는 한 HTTP 요청 동안만 살아있는 저장소입니다. 여러 함수에서 <code>get_db()</code>를 호출해도 동일한 연결 객체를 재사용하여, 불필요한 DB 연결 생성을 막습니다.</p>
+      </div>
+      <div class="card-inner">
+        <h4><span class="lv lv-a">실무</span> 커넥션 풀 vs 요청 단위 연결</h4>
+        <p>SQLite는 파일 기반이라 연결 비용이 낮아 요청 단위로 충분합니다. 하지만 PostgreSQL/MySQL을 사용하는 실무 환경에서는 <strong>커넥션 풀</strong>을 사용합니다 (예: SQLAlchemy의 <code>create_engine(pool_size=10)</code>). 풀은 미리 연결을 만들어두고 재사용하여, 연결 생성 오버헤드를 제거합니다.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <span class="tag tag-red">이슈</span>
+      <h3>Step 1 자주 발생하는 이슈</h3>
+
+      <h4>1) ModuleNotFoundError: No module named 'flask'</h4>
+      <div class="card-inner">
+        <p><strong>원인:</strong> 가상환경을 활성화하지 않고 실행했습니다.</p>
+        <p><strong>해결:</strong></p>
+        <pre><code># 가상환경 활성화 후 실행
+.venv\Scripts\Activate.ps1    # Windows
+source .venv/bin/activate     # Mac/Linux
+python app.py</code></pre>
+      </div>
+
+      <h4>2) Address already in use (포트 충돌)</h4>
+      <div class="card-inner">
+        <p><strong>원인:</strong> 이미 5000번 포트를 사용 중인 프로세스가 있습니다.</p>
+        <p><strong>해결:</strong></p>
+        <pre><code># 기존 프로세스 종료 후 재실행
+# Windows: Ctrl+C 로 서버 종료
+# 또는 작업 관리자에서 python.exe 종료</code></pre>
+      </div>
+
+      <h4>3) sqlite3.OperationalError: unable to open database file</h4>
+      <div class="card-inner">
+        <p><strong>원인:</strong> <code>instance/</code> 디렉토리가 없습니다.</p>
+        <p><strong>해결:</strong> <code>get_db()</code>에서 <code>DB_PATH.parent.mkdir(parents=True, exist_ok=True)</code>가 자동 생성하므로, 이 코드가 포함되어 있는지 확인하세요.</p>
+      </div>
+    </section>
+
+    <!-- ===================== 5. STEP 2 ===================== -->
+    <hr class="sep">
+    <h2 id="step2">5. Step 2 &mdash; CRUD 전체 구현</h2>
+
+    <section class="card">
+      <span class="tag">Step 2</span> <span class="lv lv-b">입문</span>
+      <h3>CRUD란?</h3>
+      <p><strong>C</strong>reate(생성), <strong>R</strong>ead(조회), <strong>U</strong>pdate(수정), <strong>D</strong>elete(삭제). 데이터를 다루는 4가지 기본 작업입니다. 거의 모든 웹 애플리케이션의 핵심입니다.</p>
+      <table>
+        <tr><th>작업</th><th>HTTP 메서드</th><th>SQL</th><th>비유</th></tr>
+        <tr><td>Create</td><td><code>POST</code></td><td><code>INSERT</code></td><td>새 글 쓰기</td></tr>
+        <tr><td>Read</td><td><code>GET</code></td><td><code>SELECT</code></td><td>글 읽기</td></tr>
+        <tr><td>Update</td><td><code>POST</code></td><td><code>UPDATE</code></td><td>글 수정</td></tr>
+        <tr><td>Delete</td><td><code>POST</code></td><td><code>DELETE</code></td><td>글 삭제</td></tr>
+      </table>
+    </section>
+
+    <section class="card">
+      <span class="tag">Step 2</span>
+      <h3>HTTP 메서드와 URL 설계</h3>
+      <p><span class="lv lv-b">입문</span> 웹에서는 URL과 HTTP 메서드의 조합으로 "무엇을 할 것인가"를 결정합니다.</p>
+      <table>
+        <tr><th>URL</th><th>GET (읽기)</th><th>POST (쓰기)</th></tr>
+        <tr><td><code>/posts</code></td><td>글 목록 보기</td><td>새 글 등록</td></tr>
+        <tr><td><code>/posts/new</code></td><td>글쓰기 폼</td><td>&mdash;</td></tr>
+        <tr><td><code>/posts/1</code></td><td>1번 글 상세</td><td>1번 글 수정</td></tr>
+        <tr><td><code>/posts/1/edit</code></td><td>1번 글 수정 폼</td><td>&mdash;</td></tr>
+        <tr><td><code>/posts/1/delete</code></td><td>&mdash;</td><td>1번 글 삭제</td></tr>
+      </table>
+      <div class="card-inner">
+        <h4><span class="lv lv-m">중급</span> RESTful API 관점</h4>
+        <p>이 프로젝트의 URL 설계는 REST 원칙을 부분적으로 따릅니다. 완전한 REST에서는 <code>DELETE /posts/1</code>처럼 HTTP DELETE 메서드를 사용하지만, HTML 폼은 GET/POST만 지원하므로 실무에서도 이 방식이 흔합니다. API 서버라면 <code>method=DELETE</code>를 사용하는 것이 정석입니다.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <span class="tag">Step 2</span>
+      <h3>주요 코드 해설</h3>
+
+      <div class="step">
+        <h4>Create &mdash; 글 등록</h4>
+        <pre><code>@app.route("/posts", methods=["POST"])
+def posts_create():
+    title = request.form.get("title", "").strip()    # 폼 데이터 읽기
+    content = request.form.get("content", "").strip()
+
+    if not title or not content:                       # 유효성 검사
+        return _validate_post_form(title, content, "create")
+
+    db = get_db()
+    cursor = db.execute(
+        "INSERT INTO posts (title, content) VALUES (?, ?)",  # 파라미터화 쿼리
+        (title, content),
+    )
+    db.commit()                                        # 트랜잭션 확정
+    return redirect(url_for("posts_detail", post_id=cursor.lastrowid))</code></pre>
+        <p><span class="lv lv-b">입문</span> <code>cursor.lastrowid</code>는 방금 INSERT된 행의 id를 반환합니다. 글을 쓰고 바로 상세 페이지로 이동할 때 사용합니다.</p>
+      </div>
+
+      <div class="step">
+        <h4>Read &mdash; 글 상세</h4>
+        <pre><code>@app.route("/posts/&lt;int:post_id&gt;")
+def posts_detail(post_id):
+    db = get_db()
+    post = db.execute(
+        "SELECT id, title, content, created_at FROM posts WHERE id = ?",
+        (post_id,),
+    ).fetchone()
+
+    if post is None:
+        abort(404)                                    # 없는 글이면 404 에러
+
+    return render_template("posts/detail.html", post=post)</code></pre>
+        <p><span class="lv lv-m">중급</span> <code>&lt;int:post_id&gt;</code>는 URL의 동적 세그먼트입니다. Flask가 자동으로 정수로 변환하여 함수 인자로 전달합니다.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <span class="tag tag-red">이슈</span>
+      <h3>Step 2 자주 발생하는 이슈</h3>
+
+      <h4>1) 글을 써도 저장이 안 됨</h4>
+      <div class="card-inner">
+        <p><strong>원인:</strong> <code>db.commit()</code> 누락. SQLite는 기본적으로 auto-commit이 아닙니다.</p>
+        <p><strong>해결:</strong> INSERT/UPDATE/DELETE 후 반드시 <code>db.commit()</code>을 호출하세요.</p>
+      </div>
+
+      <h4>2) 404 Not Found가 자꾸 뜸</h4>
+      <div class="card-inner">
+        <p><strong>원인:</strong> URL 오타 또는 <code>fetchone()</code> 결과가 <code>None</code>인데 처리하지 않음.</p>
+        <p><strong>해결:</strong> <code>if post is None: abort(404)</code> 패턴을 모든 상세/수정/삭제 함수에 적용하세요.</p>
+      </div>
+
+      <h4>3) 글 수정이 안 되고 새 글이 계속 생김</h4>
+      <div class="card-inner">
+        <p><strong>원인:</strong> 폼의 <code>action</code> URL이 수정용이 아닌 생성용으로 설정됨.</p>
+        <p><strong>해결:</strong> 수정 모드에서는 <code>form_action=url_for("posts_update", post_id=post_id)</code>를 사용하세요.</p>
+      </div>
+    </section>
+
+    <!-- ===================== 6. STEP 3 ===================== -->
+    <hr class="sep">
+    <h2 id="step3">6. Step 3 &mdash; 템플릿 &amp; UI (Tailwind CSS)</h2>
+
+    <section class="card">
+      <span class="tag">Step 3</span> <span class="lv lv-b">입문</span>
+      <h3>Jinja2 템플릿 상속</h3>
+      <p>모든 페이지에서 반복되는 헤더, 하단 네비게이션, 스타일을 <code>base.html</code>에 모아두고, 각 페이지는 내용만 작성합니다.</p>
+      <pre><code>&lt;!-- base.html: 공통 레이아웃 --&gt;
+&lt;!doctype html&gt;
+&lt;html lang="ko"&gt;
+  &lt;head&gt;...공통 CSS/JS...&lt;/head&gt;
+  &lt;body&gt;
+    &lt;header&gt;...상단 헤더...&lt;/header&gt;
+    &lt;main&gt;{% block content %}{% endblock %}&lt;/main&gt;  ← 각 페이지 내용이 여기에
+    &lt;nav&gt;...하단 네비게이션...&lt;/nav&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+
+&lt;!-- list.html: 목록 페이지 --&gt;
+{% extends "base.html" %}              ← base.html 상속
+{% block title %}게시글 목록{% endblock %}
+{% block content %}
+  ...목록 내용만 작성...
+{% endblock %}</code></pre>
+    </section>
+
+    <section class="card">
+      <span class="tag">Step 3</span> <span class="lv lv-b">입문</span>
+      <h3>Tailwind CSS란?</h3>
+      <p>미리 만들어진 CSS 클래스를 조합하여 디자인하는 <strong>유틸리티 퍼스트 CSS 프레임워크</strong>입니다. CSS 파일을 직접 작성하지 않아도 됩니다.</p>
+      <table>
+        <tr><th>클래스</th><th>효과</th></tr>
+        <tr><td><code>text-3xl</code></td><td>글자 크기 1.875rem (30px)</td></tr>
+        <tr><td><code>font-bold</code></td><td>굵은 글씨</td></tr>
+        <tr><td><code>rounded-lg</code></td><td>둥근 모서리 (8px)</td></tr>
+        <tr><td><code>px-4 py-2</code></td><td>가로 16px, 세로 8px 안쪽 여백</td></tr>
+        <tr><td><code>hover:opacity-90</code></td><td>마우스 올렸을 때 투명도 90%</td></tr>
+        <tr><td><code>flex gap-2</code></td><td>가로 정렬, 요소 간 8px 간격</td></tr>
+        <tr><td><code>fixed bottom-0</code></td><td>화면 하단에 고정</td></tr>
+      </table>
+      <div class="card-inner">
+        <h4><span class="lv lv-m">중급</span> CDN vs 빌드 방식</h4>
+        <p>이 프로젝트는 <code>&lt;script src="https://cdn.tailwindcss.com"&gt;</code> CDN 방식을 사용합니다. 빠른 프로토타이핑에 적합하지만, 실무에서는 <strong>PostCSS 빌드 방식</strong>을 사용하여 사용하지 않는 CSS를 제거(Tree-shaking)하고 파일 크기를 최적화합니다.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <span class="tag">Step 3</span>
+      <h3>템플릿 구조 상세</h3>
+      <table>
+        <tr><th>파일</th><th>역할</th><th>주요 기능</th></tr>
+        <tr><td><code>base.html</code></td><td>공통 레이아웃</td><td>상단 헤더, 하단 네비(Feed/Write/Profile), Tailwind CDN, 폰트</td></tr>
+        <tr><td><code>list.html</code></td><td>글 목록</td><td>검색바, 정렬 드롭다운, 게시글 카드, [이전]/[다음] 페이지네이션</td></tr>
+        <tr><td><code>detail.html</code></td><td>글 상세</td><td>제목/본문/날짜, 목록/수정/삭제 버튼</td></tr>
+        <tr><td><code>new.html</code></td><td>글쓰기+수정</td><td>공통 폼, mode(edit/create)로 분기, 유효성 에러 표시</td></tr>
+      </table>
+      <div class="card-inner">
+        <h4><span class="lv lv-m">중급</span> new.html이 글쓰기와 수정을 모두 처리하는 방법</h4>
+        <p>하나의 템플릿으로 두 가지 기능을 처리합니다. 구분은 변수로 합니다:</p>
+        <ul class="checklist">
+          <li><code>mode="create"</code> + <code>form_action=url_for("posts_create")</code> → 글쓰기</li>
+          <li><code>mode="edit"</code> + <code>form_action=url_for("posts_update", post_id=...)</code> → 수정</li>
+        </ul>
+        <p>이 패턴을 <strong>DRY (Don't Repeat Yourself)</strong> 원칙이라고 합니다.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <span class="tag tag-red">이슈</span>
+      <h3>Step 3 자주 발생하는 이슈</h3>
+
+      <h4>1) jinja2.TemplateNotFound</h4>
+      <div class="card-inner">
+        <p><strong>원인:</strong> 템플릿 파일 위치가 잘못됨. Flask는 <code>templates/</code> 폴더에서만 찾습니다.</p>
+        <p><strong>해결:</strong> 파일이 <code>templates/posts/list.html</code> 경로에 있는지 확인하세요.</p>
+      </div>
+
+      <h4>2) CSS가 적용되지 않음</h4>
+      <div class="card-inner">
+        <p><strong>원인:</strong> 인터넷 연결 문제로 Tailwind CDN을 로드하지 못함.</p>
+        <p><strong>해결:</strong> 브라우저 개발자 도구(F12) → Console 탭에서 CDN 로드 에러 확인.</p>
+      </div>
+
+      <h4>3) 수정 폼에 기존 내용이 안 나옴</h4>
+      <div class="card-inner">
+        <p><strong>원인:</strong> <code>render_template()</code>에 <code>title</code>, <code>content</code> 변수를 전달하지 않음.</p>
+        <p><strong>해결:</strong> 수정 라우트에서 DB에서 읽은 값을 템플릿에 넘겨야 합니다.</p>
+      </div>
+    </section>
+
+    <!-- ===================== 7. STEP 4 ===================== -->
+    <hr class="sep">
+    <h2 id="step4">7. Step 4 &mdash; 페이지네이션 &amp; 검색 &amp; 정렬</h2>
+
+    <section class="card">
+      <span class="tag tag-orange">Step 4</span> <span class="lv lv-b">입문</span>
+      <h3>페이지네이션 (Pagination)</h3>
+      <p>게시글이 수백 개가 되면 한 화면에 다 보여줄 수 없습니다. <strong>페이지네이션</strong>은 데이터를 정해진 개수만큼 나누어 보여주는 기법입니다.</p>
+      <pre><code>PER_PAGE = 10                    # 한 페이지에 10개
+
+total = db.execute(f"SELECT COUNT(*) FROM posts {where_clause}", params).fetchone()[0]
+total_pages = max(1, (total + PER_PAGE - 1) // PER_PAGE)   # 올림 나눗셈
+page = min(page, total_pages)                                # 범위 보정
+offset = (page - 1) * PER_PAGE
+
+posts = db.execute(
+    f"SELECT ... {where_clause} {order_clause} LIMIT ? OFFSET ?",
+    params + [PER_PAGE, offset],
+).fetchall()</code></pre>
+
+      <div class="card-inner">
+        <h4><span class="lv lv-b">입문</span> LIMIT / OFFSET 이해하기</h4>
+        <table>
+          <tr><th>page</th><th>LIMIT</th><th>OFFSET</th><th>가져오는 데이터</th></tr>
+          <tr><td>1</td><td>10</td><td>0</td><td>1~10번 글</td></tr>
+          <tr><td>2</td><td>10</td><td>10</td><td>11~20번 글</td></tr>
+          <tr><td>3</td><td>10</td><td>20</td><td>21~30번 글</td></tr>
+        </table>
+        <p>LIMIT = "몇 개 가져올까", OFFSET = "몇 개 건너뛸까" 라고 이해하면 쉽습니다.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <span class="tag tag-orange">Step 4</span>
+      <h3>UI: [이전] [다음] 버튼 페이지네이션</h3>
+      <pre><code>&lt;!-- list.html 페이지네이션 --&gt;
+{% if total_pages &gt; 1 %}
+&lt;nav class="mt-10 flex justify-center items-center gap-4"&gt;
+  {% if page &gt; 1 %}
+    &lt;a href="...page=page-1..." class="..."&gt;이전&lt;/a&gt;
+  {% else %}
+    &lt;span class="...cursor-not-allowed"&gt;이전&lt;/span&gt;  ← 첫 페이지에서 비활성화
+  {% endif %}
+
+  &lt;span&gt;{{ page }} / {{ total_pages }}&lt;/span&gt;       ← 현재/전체 표시
+
+  {% if page &lt; total_pages %}
+    &lt;a href="...page=page+1..." class="..."&gt;다음&lt;/a&gt;
+  {% else %}
+    &lt;span class="...cursor-not-allowed"&gt;다음&lt;/span&gt;  ← 마지막 페이지에서 비활성화
+  {% endif %}
+&lt;/nav&gt;
+{% endif %}</code></pre>
+    </section>
+
+    <section class="card">
+      <span class="tag tag-orange">Step 4</span> <span class="lv lv-b">입문</span>
+      <h3>검색 (Search)</h3>
+      <p>사용자가 입력한 키워드를 제목과 내용에서 찾습니다. SQL의 <code>LIKE</code> 연산자를 사용합니다.</p>
+      <pre><code>search = request.args.get("q", "").strip()
+
+if search:
+    where_clause = "WHERE title LIKE ? OR content LIKE ?"
+    params.extend([f"%{search}%", f"%{search}%"])
+
+# URL: /posts?q=Flask → WHERE title LIKE '%Flask%' OR content LIKE '%Flask%'</code></pre>
+      <div class="card-inner">
+        <h4><span class="lv lv-m">중급</span> LIKE vs Full-Text Search</h4>
+        <p><code>LIKE '%키워드%'</code>는 간단하지만 데이터가 많아지면 느려집니다 (전체 스캔). 실무에서는 SQLite의 <strong>FTS5 (Full-Text Search)</strong>나 PostgreSQL의 <strong>tsvector</strong>를 사용합니다.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <span class="tag tag-orange">Step 4</span> <span class="lv lv-b">입문</span>
+      <h3>정렬 (Sort)</h3>
+      <pre><code>order_map = {
+    "newest":     "ORDER BY created_at DESC",   # 최신순 (기본)
+    "oldest":     "ORDER BY created_at ASC",    # 오래된순
+    "title_asc":  "ORDER BY title ASC",         # A→Z
+    "title_desc": "ORDER BY title DESC",        # Z→A
+}
+order_clause = order_map.get(sort, order_map["newest"])</code></pre>
+      <div class="card-inner">
+        <h4><span class="lv lv-m">중급</span> 정렬 보안: 화이트리스트 패턴</h4>
+        <p>사용자 입력을 직접 SQL에 넣으면 <strong>SQL Injection</strong> 위험이 있습니다. 이 코드는 <code>order_map.get(sort, 기본값)</code>으로 미리 정의된 값만 허용하는 <strong>화이트리스트</strong> 방식을 사용하여 안전합니다.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <span class="tag tag-orange">Step 4</span>
+      <h3>조합: 검색 + 정렬 + 페이지네이션</h3>
+      <p>세 기능 모두 URL 파라미터로 동작하므로 자연스럽게 조합됩니다.</p>
+      <pre><code>URL: /posts?q=Python&sort=oldest&page=2
+
+→ WHERE title LIKE '%Python%' OR content LIKE '%Python%'
+→ ORDER BY created_at ASC
+→ LIMIT 10 OFFSET 10</code></pre>
+      <p>페이지 이동 시에도 <code>q</code>와 <code>sort</code>를 URL에 유지하여 검색/정렬 상태가 초기화되지 않습니다.</p>
+    </section>
+
+    <section class="card">
+      <span class="tag tag-red">이슈</span>
+      <h3>Step 4 자주 발생하는 이슈</h3>
+
+      <h4>1) 페이지네이션이 적용되지 않고 전체 글이 나옴</h4>
+      <div class="card-inner">
+        <p><strong>원인 1:</strong> 브라우저 캐시. 예전 페이지가 그대로 보이는 경우가 많습니다.</p>
+        <p><strong>해결:</strong> <code>Ctrl+Shift+R</code> 강력 새로고침, 또는 DB 삭제 후 재생성.</p>
+        <pre><code># DB 삭제 후 재생성
+rm instance/posts.db    # Mac/Linux
+del instance\posts.db   # Windows
+
+# DB 스키마 생성 + 샘플 데이터
+python -c "from app import app; app.app_context().__enter__(); from app import init_db; init_db()"
+python seed.py
+python app.py</code></pre>
+        <p><strong>원인 2:</strong> 서버 재시작 없이 템플릿만 수정한 경우. Flask debug 모드는 자동 감지하지만, DB 구조 변경 시 서버 재시작이 필요할 수 있습니다.</p>
+      </div>
+
+      <h4>2) 마지막 페이지가 비어 있음</h4>
+      <div class="card-inner">
+        <p><strong>원인:</strong> <code>page</code> 값이 <code>total_pages</code>를 초과함.</p>
+        <p><strong>해결:</strong> <code>page = min(page, total_pages)</code>로 보정.</p>
+      </div>
+
+      <h4>3) 검색 시 페이지네이션이 초기화됨</h4>
+      <div class="card-inner">
+        <p><strong>원인:</strong> 페이지네이션 링크에 검색어(<code>q</code>)가 누락됨.</p>
+        <p><strong>해결:</strong> 모든 페이지 링크에 <code>q=search</code> 파라미터를 포함하세요.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <span class="tag tag-orange">seed.py</span>
+      <h3>샘플 데이터 생성 스크립트</h3>
+      <p><span class="lv lv-b">입문</span> 테스트할 데이터가 필요할 때 사용합니다.</p>
+      <pre><code>python seed.py    # 120개 샘플 데이터 생성</code></pre>
+      <ul class="checklist">
+        <li>개발/기술 관련 50개 제목 템플릿 순환 사용</li>
+        <li>5가지 본문 템플릿 (제목 자동 치환)</li>
+        <li>2026-01-01 ~ 04-25 랜덤 날짜 생성</li>
+        <li>실행 시 기존 데이터 초기화 후 새로 생성</li>
+      </ul>
+    </section>
+
+    <!-- ===================== 8. STEP 5 ===================== -->
+    <hr class="sep">
+    <h2 id="step5">8. Step 5 &mdash; Render 클라우드 배포</h2>
+
+    <section class="card">
+      <span class="tag tag-green">배포</span> <span class="lv lv-m">중급</span>
+      <h3>로컬 개발 vs 프로덕션 배포</h3>
+      <table>
+        <tr><th>구분</th><th>로컬 개발</th><th>프로덕션 (Render)</th></tr>
+        <tr><td>서버</td><td><code>Flask 개발 서버</code></td><td><code>Gunicorn</code> WSGI 서버</td></tr>
+        <tr><td>DB 위치</td><td><code>instance/posts.db</code></td><td><code>/var/data/posts.db</code> (환경변수)</td></tr>
+        <tr><td>디버그</td><td><code>debug=True</code></td><td>비활성화 (보안)</td></tr>
+        <tr><td>포트</td><td>5000 (고정)</td><td><code>$PORT</code> (Render가 자동 할당)</td></tr>
+      </table>
+      <div class="card-inner">
+        <h4><span class="lv lv-m">중급</span> WSGI란?</h4>
+        <p><strong>Web Server Gateway Interface</strong>. Python 웹 애플리케이션과 웹 서버 간의 표준 통신 규약입니다. Flask의 <code>app.run()</code>은 개발용이며 동시 접속을 처리하지 못합니다. <code>Gunicorn</code>은 여러 worker 프로세스를 띄워 다중 요청을 동시에 처리합니다.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <span class="tag tag-green">배포</span>
+      <h3>배포 준비 파일</h3>
+      <pre><code># requirements.txt
+Flask==3.1.3
+gunicorn==23.0.0
+
+# Procfile
+web: gunicorn app:app --bind 0.0.0.0:$PORT
+
+# runtime.txt
+python-3.11.x</code></pre>
+      <ul class="checklist">
+        <li><code>requirements.txt</code> &mdash; Render가 설치할 패키지 목록</li>
+        <li><code>Procfile</code> &mdash; Render가 실행할 명령어</li>
+        <li><code>runtime.txt</code> &mdash; Python 버전 지정</li>
+        <li><code>app.py</code>의 <code>DATABASE_PATH</code> 환경변수 &mdash; Render의 영구 디스크 경로를 가리킴</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <span class="tag tag-green">배포</span>
+      <div class="step step-green">
+        <h3>Render 배포 절차</h3>
+        <ol>
+          <li><a href="https://render.com" target="_blank" rel="noreferrer">render.com</a> 로그인 (GitHub 계정)</li>
+          <li><strong>New +</strong> &rarr; <strong>Web Service</strong></li>
+          <li>GitHub 저장소 연결, Branch: <code>main</code></li>
+          <li>Build Command: <code>pip install -r requirements.txt</code></li>
+          <li>Start Command: <code>gunicorn app:app --bind 0.0.0.0:$PORT</code></li>
+          <li>환경변수 추가: <code>DATABASE_PATH=/var/data/posts.db</code></li>
+          <li>디스크 추가: Mount Path <code>/var/data</code></li>
+          <li><strong>Create Web Service</strong> 클릭</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="card">
+      <span class="tag tag-red">이슈</span>
+      <h3>Step 5 자주 발생하는 이슈</h3>
+
+      <h4>1) Application failed to respond</h4>
+      <div class="card-inner">
+        <p><strong>원인:</strong> Start Command가 잘못되었거나 포트 바인딩 문제.</p>
+        <p><strong>해결:</strong> Start Command를 정확히 확인: <code>gunicorn app:app --bind 0.0.0.0:$PORT</code></p>
+      </div>
+
+      <h4>2) 배포 후 데이터가 자꾸 초기화됨</h4>
+      <div class="card-inner">
+        <p><strong>원인:</strong> Render는 기본적으로 <strong>ephemeral filesystem</strong>을 사용합니다. 재배포 시 파일이 사라집니다.</p>
+        <p><strong>해결:</strong> Render 대시보드에서 <strong>Disk</strong> 추가 (Mount Path: <code>/var/data</code>) + 환경변수 <code>DATABASE_PATH=/var/data/posts.db</code> 설정.</p>
+      </div>
+
+      <h4>3) Build failed: ModuleNotFoundError</h4>
+      <div class="card-inner">
+        <p><strong>원인:</strong> <code>requirements.txt</code>에 필요 패키지가 빠졌거나, 파일이 저장소에 커밋되지 않았습니다.</p>
+        <p><strong>해결:</strong> <code>pip freeze &gt; requirements.txt</code> 후 <code>git add</code>, <code>git commit</code>, <code>git push</code>.</p>
+      </div>
+    </section>
+
+    <!-- ===================== 9. THEORY ===================== -->
+    <hr class="sep">
+    <h2 id="theory">9. 핵심 기술 이론 &mdash; 실무 적용 가이드</h2>
+
+    <section class="card">
+      <span class="tag tag-blue">이론</span> <span class="lv lv-b">입문</span>
+      <h3>웹의 기본 구조: 클라이언트-서버 모델</h3>
+      <pre><code>사용자(브라우저)  ---요청(Request)---&gt;  서버(Flask)
+                &lt;--응답(Response)---  HTML 페이지</code></pre>
+      <ul class="checklist">
+        <li><strong>클라이언트</strong> = 브라우저 (Chrome, Safari). 사용자가 보는 화면.</li>
+        <li><strong>서버</strong> = Flask 앱. 데이터를 처리하고 HTML을 만들어 돌려줌.</li>
+        <li><strong>HTTP</strong> = 클라이언트와 서버가 대화하는 규약(프로토콜).</li>
+        <li><strong>GET</strong> = "데이터를 보여줘" / <strong>POST</strong> = "데이터를 저장/변경해줘"</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <span class="tag tag-blue">이론</span> <span class="lv lv-b">입문</span>
+      <h3>SQL 기본 &mdash; 이 프로젝트에서 쓰는 4가지 쿼리</h3>
+      <table>
+        <tr><th>작업</th><th>SQL</th><th>설명</th></tr>
+        <tr><td>생성</td><td><code>INSERT INTO 테이블 (컬럼) VALUES (값)</code></td><td>새 행 추가</td></tr>
+        <tr><td>조회</td><td><code>SELECT 컬럼 FROM 테이블 WHERE 조건</code></td><td>데이터 검색</td></tr>
+        <tr><td>수정</td><td><code>UPDATE 테이블 SET 컬럼=값 WHERE 조건</code></td><td>기존 행 변경</td></tr>
+        <tr><td>삭제</td><td><code>DELETE FROM 테이블 WHERE 조件</code></td><td>행 제거</td></tr>
+      </table>
+      <div class="card-inner">
+        <h4><span class="lv lv-m">중급</span> SQL Injection과 파라미터화 쿼리</h4>
+        <p>사용자 입력을 문자열拼接으로 SQL에 넣으면 해킹 위험이 있습니다:</p>
+        <pre><code># 위험! SQL Injection 가능
+db.execute(f"SELECT * FROM posts WHERE title = '{title}'")
+
+# 안전: 파라미터화 쿼리 (? 사용)
+db.execute("SELECT * FROM posts WHERE title = ?", (title,))</code></pre>
+        <p><code>?</code> 자리에 값이 안전하게 바인딩되어, 악의적인 SQL이 실행되지 않습니다. <strong>이 프로젝트의 모든 쿼리는 파라미터화 방식을 사용합니다.</strong></p>
+      </div>
+    </section>
+
+    <section class="card">
+      <span class="tag tag-blue">이론</span> <span class="lv lv-m">중급</span>
+      <h3>Flask의 핵심 개념</h3>
+      <table>
+        <tr><th>개념</th><th>설명</th><th>코드</th></tr>
+        <tr><td><strong>라우팅</strong></td><td>URL을 함수에 연결</td><td><code>@app.route("/posts")</code></td></tr>
+        <tr><td><strong>요청 객체</strong></td><td>사용자가 보낸 데이터 접근</td><td><code>request.form.get("title")</code></td></tr>
+        <tr><td><strong>응답</strong></td><td>HTML 페이지 반환</td><td><code>render_template("list.html")</code></td></tr>
+        <tr><td><strong>리다이렉트</strong></td><td>다른 URL로 이동</td><td><code>redirect(url_for("posts_list"))</code></td></tr>
+        <tr><td><strong>g 객체</strong></td><td>요청 단위 저장소</td><td><code>g.db = sqlite3.connect(...)</code></td></tr>
+        <tr><td><strong>세션</strong></td><td>사용자 단위 저장소 (이 프로젝트에서는 미사용)</td><td><code>session["user"] = "..."</code></td></tr>
+        <tr><td><strong>abort</strong></td><td>HTTP 에러 응답</td><td><code>abort(404)</code></td></tr>
+      </table>
+    </section>
+
+    <section class="card">
+      <span class="tag tag-blue">이론</span> <span class="lv lv-a">실무</span>
+      <h3>이 프로젝트에서 실무로 확장하는 방법</h3>
+
+      <div class="card-inner">
+        <h4>1. 데이터베이스 마이그레이션</h4>
+        <p>SQLite → PostgreSQL/MySQL 전환 시 SQLAlchemy + Alembic 사용:</p>
+        <pre><code># SQLAlchemy 모델 예시
+from flask_sqlalchemy import SQLAlchemy
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)</code></pre>
+      </div>
+
+      <div class="card-inner">
+        <h4>2. 사용자 인증</h4>
+        <p>Flask-Login으로 로그인/로그아웃/권한 관리:</p>
+        <pre><code>from flask_login import LoginManager, login_required
+
+@app.route("/posts/new")
+@login_required        # 로그인한 사용자만 접근
+def posts_new():
+    ...</code></pre>
+      </div>
+
+      <div class="card-inner">
+        <h4>3. 페이지네이션 고도화</h4>
+        <p>커서 기반 페이지네이션 (대량 데이터에 유리):</p>
+        <pre><code># OFFSET은 데이터가 많으면 느려짐
+# 커서 방식은 마지막 id를 기준으로 다음 데이터를 가져옴
+SELECT * FROM posts WHERE id &lt; ? ORDER BY id DESC LIMIT 10</code></pre>
+      </div>
+
+      <div class="card-inner">
+        <h4>4. 폼 검증</h4>
+        <p>Flask-WTF로 서버 사이드 검증 + CSRF 보호:</p>
+        <pre><code>from flask_wtf import FlaskForm
+from wtforms import StringField, TextAreaField, validators
+
+class PostForm(FlaskForm):
+    title = StringField("제목", [validators.Length(min=1, max=200)])
+    content = TextAreaField("내용", [validators.Length(min=1)])</code></pre>
+      </div>
+
+      <div class="card-inner">
+        <h4>5. 환경 변수 관리</h4>
+        <p><code>python-dotenv</code>로 .env 파일에서 설정 로드:</p>
+        <pre><code># .env
+DATABASE_PATH=instance/posts.db
+SECRET_KEY=my-secret-key
+FLASK_ENV=development
+
+# app.py
+from dotenv import load_dotenv
+load_dotenv()  # .env 파일의 변수를 os.getenv()로 읽을 수 있음</code></pre>
+      </div>
+    </section>
+
+    <!-- ===================== 10. TROUBLESHOOT ===================== -->
+    <hr class="sep">
+    <h2 id="troubleshoot">10. 트러블슈팅 &mdash; 자주 발생하는 이슈 총정리</h2>
+
+    <section class="card">
+      <span class="tag tag-red">트러블슈팅</span>
+      <table>
+        <tr><th>증상</th><th>원인</th><th>해결</th></tr>
+        <tr><td><code>ModuleNotFoundError</code></td><td>가상환경 미활성화</td><td><code>.venv\Scripts\Activate.ps1</code></td></tr>
+        <tr><td><code>TemplateNotFound</code></td><td>파일 경로 오류</td><td><code>templates/posts/</code> 아래 확인</td></tr>
+        <tr><td>글이 저장 안 됨</td><td><code>db.commit()</code> 누락</td><td>INSERT/UPDATE/DELETE 후 commit 추가</td></tr>
+        <tr><td>404 에러</td><td>없는 id 조회</td><td><code>if post is None: abort(404)</code></td></tr>
+        <tr><td>전체 글이 한 페이지에</td><td>브라우저 캐시</td><td>Ctrl+Shift+R 또는 DB 재생성</td></tr>
+        <tr><td>배포 후 데이터 초기화</td><td>ephemeral filesystem</td><td>Render Disk 추가 + 환경변수 설정</td></tr>
+        <tr><td><code>no such table: posts</code></td><td>DB 파일 삭제 후 미초기화</td><td>앱 실행(자동 생성) 후 seed.py</td></tr>
+        <tr><td><code>Working outside of application context</code></td><td>Flask context 없이 DB 접근</td><td><code>with app.app_context():</code> 안에서 실행</td></tr>
+        <tr><td>포트 충돌</td><td>이미 서버 실행 중</td><td>Ctrl+C로 종료 후 재실행</td></tr>
+        <tr><td>CSS 안 먹힘</td><td>CDN 로드 실패</td><td>인터넷 연결 확인, F12 Console 확인</td></tr>
+      </table>
+    </section>
+
+    <section class="card">
+      <span class="tag tag-red">트러블슈팅</span>
+      <h3>DB 완전 초기화 절차</h3>
+      <p>데이터가 꼬이거나 처음부터 다시 만들고 싶을 때:</p>
+      <pre><code># 1. 서버 종료 (Ctrl+C)
+
+# 2. DB 파일 삭제
+rm instance/posts.db      # Mac/Linux / Git Bash
+del instance\posts.db     # Windows CMD
+
+# 3. DB 스키마 생성 (app.py의 init_db() 호출)
+python -c "from app import app; app.app_context().__enter__(); from app import init_db; init_db()"
+
+# 4. 샘플 데이터 삽입
+python seed.py
+
+# 5. 서버 재시작
+python app.py
+
+# 6. 브라우저에서 확인 (Ctrl+Shift+R)
+# http://127.0.0.1:5000/posts</code></pre>
+    </section>
+
+    <!-- ===================== 11. COMMANDS ===================== -->
+    <hr class="sep">
+    <h2 id="commands">11. 명령어 치트시트</h2>
+
+    <section class="card">
+      <span class="tag">명령어</span>
+      <table>
+        <tr><th>작업</th><th>명령어</th></tr>
+        <tr><td>가상환경 활성화</td><td><code>.venv\Scripts\Activate.ps1</code> (Win) / <code>source .venv/bin/activate</code> (Mac)</td></tr>
+        <tr><td>패키지 설치</td><td><code>pip install -r requirements.txt</code></td></tr>
+        <tr><td>서버 실행</td><td><code>python app.py</code></td></tr>
+        <tr><td>샘플 데이터 생성</td><td><code>python seed.py</code></td></tr>
+        <tr><td>DB 초기화</td><td><code>rm instance/posts.db</code> 후 앱 실행 + seed.py</td></tr>
+        <tr><td>브라우저 열기</td><td><code>http://127.0.0.1:5000/</code></td></tr>
+        <tr><td>강력 새로고침</td><td><code>Ctrl+Shift+R</code></td></tr>
+        <tr><td>Git 상태 확인</td><td><code>git status</code></td></tr>
+        <tr><td>Git 커밋</td><td><code>git add . && git commit -m "메시지"</code></td></tr>
+        <tr><td>Git 배포</td><td><code>git push origin main</code></td></tr>
+      </table>
+    </section>
+
+    <!-- ===================== FOOTER ===================== -->
+    <section class="card" style="text-align:center;border:none;box-shadow:none;background:transparent">
+      <p class="ok" style="font-size:1.1rem">즐거운 코딩 되세요!</p>
+      <p style="color:#6b7280;font-size:.85rem;margin-top:8px">Claude는 완벽하지 않습니다. 중요한 결정은 항상 확인하세요.</p>
+    </section>
+
+  </div>
+</body>
+</html>
