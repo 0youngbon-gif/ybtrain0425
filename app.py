@@ -41,18 +41,58 @@ def init_db() -> None:
     db.commit()
 
 
+PER_PAGE = 10
+
+
 @app.route("/")
 def index() -> str:
-    return posts_list()
+    return redirect(url_for("posts_list"))
 
 
 @app.route("/posts")
 def posts_list() -> str:
     db = get_db()
+
+    page = request.args.get("page", 1, type=int)
+    search = request.args.get("q", "").strip()
+    sort = request.args.get("sort", "newest")
+
+    where_clause = ""
+    params: list[str | int] = []
+
+    if search:
+        where_clause = "WHERE title LIKE ? OR content LIKE ?"
+        params.extend([f"%{search}%", f"%{search}%"])
+
+    order_map = {
+        "newest": "ORDER BY created_at DESC",
+        "oldest": "ORDER BY created_at ASC",
+        "title_asc": "ORDER BY title ASC",
+        "title_desc": "ORDER BY title DESC",
+    }
+    order_clause = order_map.get(sort, order_map["newest"])
+
+    total = db.execute(
+        f"SELECT COUNT(*) FROM posts {where_clause}", params
+    ).fetchone()[0]
+    total_pages = max(1, (total + PER_PAGE - 1) // PER_PAGE)
+    page = min(page, total_pages)
+    offset = (page - 1) * PER_PAGE
+
     posts = db.execute(
-        "SELECT id, title, content, created_at FROM posts ORDER BY id DESC"
+        f"SELECT id, title, content, created_at FROM posts {where_clause} {order_clause} LIMIT ? OFFSET ?",
+        params + [PER_PAGE, offset],
     ).fetchall()
-    return render_template("posts/list.html", posts=posts)
+
+    return render_template(
+        "posts/list.html",
+        posts=posts,
+        page=page,
+        total_pages=total_pages,
+        total=total,
+        search=search,
+        sort=sort,
+    )
 
 
 @app.route("/posts/new")

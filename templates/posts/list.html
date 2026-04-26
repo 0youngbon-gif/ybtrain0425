@@ -8,6 +8,41 @@
   <h2 class="text-3xl font-bold tracking-tight mt-2">The Editorial Feed</h2>
 </header>
 
+<!-- 검색 + 정렬 -->
+<div class="mb-6 space-y-3">
+  <form method="get" action="{{ url_for('posts_list') }}" class="flex gap-2">
+    <input
+      type="text"
+      name="q"
+      value="{{ search }}"
+      placeholder="검색어 입력..."
+      class="flex-1 border border-stone-300 rounded-lg px-4 py-2 bg-white text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#695d46]"
+    />
+    <input type="hidden" name="sort" value="{{ sort }}" />
+    <button type="submit" class="bg-[#695d46] text-white px-4 py-2 rounded-lg hover:opacity-90 flex items-center gap-1">
+      <span class="material-symbols-outlined text-[18px]">search</span>
+      검색
+    </button>
+    {% if search %}
+      <a href="{{ url_for('posts_list', sort=sort) }}" class="border border-stone-300 px-3 py-2 rounded-lg text-stone-600 hover:bg-stone-100 text-sm">지우기</a>
+    {% endif %}
+  </form>
+
+  <div class="flex items-center justify-between">
+    <span class="text-sm text-stone-500">총 {{ total }}개{% if search %} (검색: "{{ search }}"){% endif %}</span>
+    <form method="get" action="{{ url_for('posts_list') }}" class="flex items-center gap-2">
+      {% if search %}<input type="hidden" name="q" value="{{ search }}" />{% endif %}
+      <select name="sort" onchange="this.form.submit()" class="border border-stone-300 rounded-lg px-3 py-1.5 text-sm bg-white text-stone-700 focus:outline-none focus:ring-2 focus:ring-[#695d46]">
+        <option value="newest" {% if sort == 'newest' %}selected{% endif %}>최신순</option>
+        <option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>오래된순</option>
+        <option value="title_asc" {% if sort == 'title_asc' %}selected{% endif %}>제목 A→Z</option>
+        <option value="title_desc" {% if sort == 'title_desc' %}selected{% endif %}>제목 Z→A</option>
+      </select>
+    </form>
+  </div>
+</div>
+
+<!-- 게시글 목록 -->
 <div class="flex flex-col gap-10">
   {% if posts %}
     {% for post in posts %}
@@ -27,15 +62,36 @@
     {% endfor %}
   {% else %}
     <section class="border border-dashed border-stone-300 rounded-xl p-6 bg-white/50">
-      <h3 class="text-xl font-semibold mb-2">아직 글이 없어요.</h3>
-      <p class="text-stone-600 mb-4">첫 글을 작성해 게시판을 시작해보세요.</p>
-      <a href="{{ url_for('posts_new') }}" class="inline-flex items-center gap-2 bg-[#695d46] text-white px-4 py-2 rounded-lg">
-        <span class="material-symbols-outlined text-[18px]">edit_square</span>
-        첫 글 쓰기
-      </a>
+      <h3 class="text-xl font-semibold mb-2">{% if search %}"{{ search }}" 검색 결과가 없어요.{% else %}아직 글이 없어요.{% endif %}</h3>
+      <p class="text-stone-600 mb-4">{% if search %}다른 검색어로 시도해보세요.{% else %}첫 글을 작성해 게시판을 시작해보세요.{% endif %}</p>
+      {% if not search %}
+        <a href="{{ url_for('posts_new') }}" class="inline-flex items-center gap-2 bg-[#695d46] text-white px-4 py-2 rounded-lg">
+          <span class="material-symbols-outlined text-[18px]">edit_square</span>
+          첫 글 쓰기
+        </a>
+      {% endif %}
     </section>
   {% endif %}
 </div>
+
+<!-- 페이지네이션 -->
+{% if total_pages > 1 %}
+<nav class="mt-10 flex justify-center items-center gap-4">
+  {% if page > 1 %}
+    <a href="{{ url_for('posts_list', page=page-1, q=search, sort=sort) }}" class="px-4 py-2 rounded-lg border border-stone-300 text-stone-600 hover:bg-stone-200 text-sm">이전</a>
+  {% else %}
+    <span class="px-4 py-2 rounded-lg border border-stone-200 text-stone-300 text-sm cursor-not-allowed">이전</span>
+  {% endif %}
+
+  <span class="text-sm text-stone-600">{{ page }} / {{ total_pages }}</span>
+
+  {% if page < total_pages %}
+    <a href="{{ url_for('posts_list', page=page+1, q=search, sort=sort) }}" class="px-4 py-2 rounded-lg border border-stone-300 text-stone-600 hover:bg-stone-200 text-sm">다음</a>
+  {% else %}
+    <span class="px-4 py-2 rounded-lg border border-stone-200 text-stone-300 text-sm cursor-not-allowed">다음</span>
+  {% endif %}
+</nav>
+{% endif %}
 
 <a href="{{ url_for('posts_new') }}" class="fixed right-6 bottom-24 bg-[#695d46] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg z-40">
   <span class="material-symbols-outlined">edit_square</span>
